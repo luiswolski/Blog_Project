@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %} {{ post.title_post|title }}{% endblock %}
+
+{% block content %}
+    <!-- POST -->
+
+<div class="row pt-5">
+    <div class="col-xl"></div>
+    <div class="col-xl-8 text-center">
+        <h2>{{post.title_post}}</h2>
+        <h5>{{post.excerpt_post}}</h5>
+        <p class="text-muted mt-4">
+            <small>
+                {{post.author_post}} | {{post.date_post}} | {{post.category_post}}
+            </small>
+        </p>
+    </div>
+    <div class="col-xl"></div>
+</div>
+
+<div class="row pt-5">
+    <div class="col-xl"></div>
+    <div class="col-xl-8">
+
+        {% if post.image_post %}
+        <img class="img-fluid pb-5 " src="{{ post.image_post.url }}" alt="{{post.title_post}}">
+        {% endif %}
+
+        {{post.content_post|safe}}
+    </div>
+    <div class="col-xl"></div>
+</div>
+
+{% if comments %}
+<div class="row pt-5">
+    <div class="col-xl"></div>
+    <div class="col-xl-8">
+        <h2 class="my-3">Comments ({{comments.count}})</h2>
+
+
+        {% for comment in comments %}
+        <h5 class="mb-2 mt-5">{{comment.name_comment}} said:</h5>
+        <small class="text-muted">{{ comment.date_comment }}</small>
+        <p class="mb-1">{{ comment.comment }}</p>
+        {% endfor %}
+
+
+
+    </div>
+    <div class="col-xl"></div>
+</div>
+{% endif %}
+
+<div class="row pt-5">
+    <div class="col-xl"></div>
+    <div class="col-xl-8">
+        <h2 class="my-3">Leave a comment</h2>
+
+        <form method="POST" action="#envia_comentario">
+            {% csrf_token %}
+
+            {% for hidden_fields in form.hidden_fields %}
+                {{ hidden_fields }}
+            {% endfor  %}
+
+            {% for visible_fields in form.visible_fields %}
+                {{ visible_fields|as_crispy_field }}
+            {% endfor  %}
+
+            <div class="g-recaptcha" data-sitekey="6LdClTAjAAAAABon6pcn4hYFAmA5UGjae-PxlZIG"></div>
+            <br/>
+
+            {% include 'partials/_messages.html' %}
+            <input id="envia_comentario" type="submit" class="btn btn-primary"
+                value="Send">
+        </form>
+
+
+    </div>
+    <div class="col-xl"></div>
+</div>
+
+
+{% endblock %}
